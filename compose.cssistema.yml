@@ -1,0 +1,21 @@
+services:
+  cssistema:
+    image: nginx:1.28.0-alpine
+    container_name: lp-cssistema
+    restart: unless-stopped
+    volumes:
+      - ./painel_distribuidores_pr.html:/usr/share/nginx/html/index.html:ro
+    networks:
+      - traefik-public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-public"
+      - "traefik.http.routers.lp-cssistema.rule=Host(`cssistema.op7franquia.com.br`)"
+      - "traefik.http.routers.lp-cssistema.entrypoints=web"
+      - "traefik.http.routers.lp-cssistema-secure.rule=Host(`cssistema.op7franquia.com.br`)"
+      - "traefik.http.routers.lp-cssistema-secure.entrypoints=websecure"
+      - "traefik.http.routers.lp-cssistema-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.services.lp-cssistema.loadbalancer.server.port=80"
+networks:
+  traefik-public:
+    external: true

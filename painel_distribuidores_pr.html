@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Distribuidores — Care Systems</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & TOKENS ─────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --sb-bg:      #16201C;
+  --sb-bg2:     #1E2B25;
+  --sb-line:    rgba(255,255,255,.07);
+  --sb-text:    rgba(255,255,255,.55);
+  --sb-text-h:  rgba(255,255,255,.85);
+  --sb-text-a:  #FFFFFF;
+  --sb-accent:  #3AB795;
+  --sb-item-h:  rgba(255,255,255,.06);
+  --sb-item-a:  rgba(58,183,149,.15);
+  --sb-dot-h:   rgba(255,255,255,.25);
+
+  --green:    #0C5A40;
+  --green-m:  #1A9268;
+  --green-lt: #E2F5EC;
+  --green-bd: rgba(26,146,104,.25);
+  --blue:     #1966B8;
+  --amber:    #C2780A;
+  --purple:   #5848C8;
+  --red:      #D44040;
+  --red-lt:   #FDEAEA;
+  --ink:      #161610;
+  --ink2:     #52524A;
+  --ink3:     #94948C;
+  --bg:       #F4F3EF;
+  --white:    #FFFFFF;
+  --line:     #E4E2DA;
+  --line2:    #CAC8C0;
+  --r:        10px;
+  --sh:       0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.05);
+  --sh2:      0 8px 32px rgba(0,0,0,.14);
+  --sidebar-w:232px;
+  --topbar-h: 52px;
+}
+html,body{height:100%;font-family:'Montserrat',sans-serif;font-size:14px;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;}
+
+/* ── LAYOUT ──────────────────────────────────────── */
+.layout{display:flex;height:100vh;overflow:hidden;}
+
+/* ═══════════════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════════════ */
+.sidebar{
+  width:var(--sidebar-w);flex-shrink:0;
+  background:var(--sb-bg);
+  display:flex;flex-direction:column;
+  overflow-y:auto;overflow-x:hidden;
+  transition:transform .25s cubic-bezier(.22,1,.36,1);
+  z-index:50;
+}
+.sidebar::-webkit-scrollbar{width:3px;}
+.sidebar::-webkit-scrollbar-track{background:transparent;}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px;}
+
+/* Brand */
+.sb-brand{
+  padding:18px 16px 16px;
+  border-bottom:1px solid var(--sb-line);
+  display:flex;align-items:center;gap:10px;
+  flex-shrink:0;
+}
+.sb-brand-icon{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--sb-accent);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:900;color:#fff;flex-shrink:0;
+  letter-spacing:-.5px;
+}
+.sb-brand-text{}
+.sb-brand-name{font-size:12px;font-weight:800;color:var(--sb-text-a);letter-spacing:-.2px;}
+.sb-brand-sub{font-size:9px;color:var(--sb-text);margin-top:1px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;}
+
+/* Search */
+.sb-search{padding:10px 12px;border-bottom:1px solid var(--sb-line);flex-shrink:0;}
+.sb-search-wrap{position:relative;}
+.sb-search-inp{
+  width:100%;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:500;
+  padding:7px 10px 7px 28px;
+  border:1px solid rgba(255,255,255,.1);border-radius:7px;
+  background:rgba(255,255,255,.06);color:var(--sb-text-a);outline:none;
+  transition:background .15s,border-color .15s;
+}
+.sb-search-inp::placeholder{color:var(--sb-text);}
+.sb-search-inp:focus{background:rgba(255,255,255,.1);border-color:var(--sb-accent);}
+.sb-search-icon{
+  position:absolute;left:9px;top:50%;transform:translateY(-50%);
+  color:var(--sb-text);font-size:10px;pointer-events:none;font-weight:700;
+}
+
+/* Section group */
+.sb-group{margin-bottom:4px;}
+.sb-group-label{
+  font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--sb-text);padding:12px 16px 5px;
+}
+
+/* Section header (collapsible) */
+.sb-section-hdr{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;margin:0 8px;border-radius:8px;
+  cursor:pointer;transition:background .12s;
+  border:none;width:calc(100% - 16px);text-align:left;font-family:'Montserrat',sans-serif;
+  background:var(--sb-bg2);margin-bottom:2px;
+}
+.sb-section-hdr:hover{background:rgba(255,255,255,.08);}
+.sb-section-hdr.open{background:rgba(58,183,149,.12);}
+.sb-section-icon{
+  width:26px;height:26px;border-radius:6px;
+  background:rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;color:var(--sb-text-h);flex-shrink:0;font-weight:700;
+}
+.sb-section-hdr.open .sb-section-icon{background:rgba(58,183,149,.25);color:var(--sb-accent);}
+.sb-section-name{flex:1;font-size:12px;font-weight:700;color:var(--sb-text-h);}
+.sb-section-hdr.open .sb-section-name{color:var(--sb-text-a);}
+.sb-section-arr{
+  font-size:10px;color:var(--sb-text);
+  transition:transform .2s;font-weight:700;
+}
+.sb-section-hdr.open .sb-section-arr{transform:rotate(180deg);color:var(--sb-accent);}
+
+/* Sub-items */
+.sb-items{
+  max-height:0;overflow:hidden;
+  transition:max-height .25s cubic-bezier(.22,1,.36,1);
+  padding:0 8px;
+}
+.sb-items.open{max-height:500px;}
+
+.sb-item{
+  display:flex;align-items:center;gap:8px;
+  padding:6px 10px 6px 14px;border-radius:7px;
+  cursor:pointer;transition:background .12s;margin-bottom:1px;
+  border:none;width:100%;text-align:left;font-family:'Montserrat',sans-serif;
+  background:transparent;position:relative;
+}
+.sb-item::before{
+  content:'';position:absolute;left:4px;top:50%;transform:translateY(-50%);
+  width:1px;height:14px;background:var(--sb-line);border-radius:1px;
+}
+.sb-item:hover{background:var(--sb-item-h);}
+.sb-item:hover .sb-item-label{color:var(--sb-text-h);}
+.sb-item.active{background:var(--sb-item-a);}
+.sb-item.active::before{background:var(--sb-accent);}
+.sb-item.active .sb-item-label{color:var(--sb-text-a);font-weight:700;}
+.sb-item.active .sb-item-count{background:var(--sb-accent);color:#fff;border-color:var(--sb-accent);}
+
+.sb-item-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sb-item-label{font-size:11px;font-weight:600;color:var(--sb-text);flex:1;}
+.sb-item-count{
+  font-size:9px;font-weight:700;
+  background:rgba(255,255,255,.08);color:var(--sb-text);
+  border:1px solid rgba(255,255,255,.1);border-radius:20px;
+  padding:1px 6px;min-width:20px;text-align:center;flex-shrink:0;
+}
+
+/* Pipeline dots */
+.dot-all     {background:rgba(255,255,255,.4);}
+.dot-novo    {background:#60A5FA;}
+.dot-negoc   {background:#F59E0B;}
+.dot-proposta{background:#F97316;}
+.dot-ativo   {background:#34D399;}
+.dot-desq    {background:#6B7280;}
+.dot-grande  {background:#34D399;}
+.dot-medio   {background:#60A5FA;}
+.dot-pequeno {background:#F59E0B;}
+.dot-r1      {background:#34D399;}
+.dot-r2      {background:#60A5FA;}
+.dot-r3      {background:#F59E0B;}
+.dot-r4      {background:#A78BFA;}
+
+/* Divider */
+.sb-div{height:1px;background:var(--sb-line);margin:6px 12px;}
+
+/* Footer */
+.sb-footer{
+  margin-top:auto;padding:12px 14px;
+  border-top:1px solid var(--sb-line);flex-shrink:0;
+}
+.sb-footer-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--sb-text);margin-bottom:3px;}
+.sb-footer-addr{font-size:10px;color:rgba(255,255,255,.35);line-height:1.5;font-weight:500;}
+
+/* ═══════════════════════════════════════════════════
+   MAIN
+═══════════════════════════════════════════════════ */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+
+/* Topbar */
+.topbar{
+  height:var(--topbar-h);flex-shrink:0;
+  background:var(--white);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:10px;padding:0 20px;
+}
+.topbar-toggle{
+  display:none;background:none;border:none;cursor:pointer;
+  width:30px;height:30px;border-radius:6px;
+  align-items:center;justify-content:center;
+  font-size:14px;color:var(--ink2);transition:background .12s;
+}
+.topbar-toggle:hover{background:var(--bg);}
+.topbar-ctx{flex:1;}
+.topbar-title{font-size:14px;font-weight:800;color:var(--ink);letter-spacing:-.2px;}
+.topbar-sub{font-size:10px;color:var(--ink3);font-weight:500;margin-top:1px;}
+.topbar-cnt{
+  font-size:11px;font-weight:700;color:var(--ink2);
+  background:var(--bg);border:1px solid var(--line);border-radius:20px;
+  padding:4px 12px;white-space:nowrap;flex-shrink:0;
+}
+
+/* KPI strip */
+.kpi-strip{
+  display:flex;gap:8px;padding:12px 20px;
+  background:var(--white);border-bottom:1px solid var(--line);
+  flex-shrink:0;overflow-x:auto;
+}
+.kpi-strip::-webkit-scrollbar{height:3px;}
+.kpi-strip::-webkit-scrollbar-thumb{background:var(--line2);border-radius:3px;}
+.kpi{
+  flex-shrink:0;background:var(--bg);border:1px solid var(--line);
+  border-radius:9px;padding:9px 14px;min-width:90px;
+}
+.kpi-v{font-size:20px;font-weight:900;color:var(--ink);letter-spacing:-.4px;line-height:1;}
+.kpi-l{font-size:9px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;margin-top:3px;}
+.kpi.hi{background:var(--green);border-color:var(--green);}
+.kpi.hi .kpi-v,.kpi.hi .kpi-l{color:#fff;}
+.kpi.hi .kpi-l{color:rgba(255,255,255,.65);}
+.kpi.warn{border-color:rgba(210,64,64,.3);background:#FEF2F2;}
+.kpi.warn .kpi-v{color:#991B1B;}
+.kpi.warn .kpi-l{color:#B91C1C;}
+
+/* Content */
+.content{flex:1;overflow-y:auto;padding:18px 20px 40px;}
+.content::-webkit-scrollbar{width:5px;}
+.content::-webkit-scrollbar-track{background:transparent;}
+.content::-webkit-scrollbar-thumb{background:var(--line2);border-radius:3px;}
+
+/* Empty */
+.empty{text-align:center;padding:60px 20px;}
+.empty-title{font-size:15px;font-weight:700;color:var(--ink2);margin-bottom:6px;}
+.empty-sub{font-size:12px;color:var(--ink3);}
+
+/* City group */
+.city-grp{margin-bottom:24px;}
+.city-hdr{
+  display:flex;align-items:center;gap:8px;margin-bottom:10px;
+  position:sticky;top:-18px;z-index:10;
+  background:var(--bg);padding:4px 0;
+}
+.city-hdr h2{font-size:13px;font-weight:800;color:var(--ink);letter-spacing:-.2px;}
+.city-count{font-size:10px;font-weight:600;color:var(--ink3);}
+.city-rota{font-size:9px;font-weight:800;padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.05em;flex-shrink:0;}
+.city-line{flex:1;height:1px;background:var(--line);}
+
+/* Grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px;}
+
+/* ── CARD ──────────────────────────────────────── */
+.card{
+  background:var(--white);border:1px solid var(--line);
+  border-radius:var(--r);overflow:hidden;
+  box-shadow:var(--sh);display:flex;flex-direction:column;
+  transition:transform .18s cubic-bezier(.22,1,.36,1),box-shadow .18s;
+}
+.card:hover{transform:translateY(-2px);box-shadow:var(--sh2);}
+.card-strip{height:3px;}
+.card.st-novo     .card-strip{background:#60A5FA;}
+.card.st-negoc    .card-strip{background:#F59E0B;}
+.card.st-proposta .card-strip{background:#F97316;}
+.card.st-ativo    .card-strip{background:#10B981;}
+.card.st-desq     .card-strip{background:#9CA3AF;}
+
+.card-head{padding:11px 13px 9px;border-bottom:1px solid var(--line);}
+.card-badges{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:5px;}
+.badge{display:inline-flex;align-items:center;font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;border:1px solid;text-transform:uppercase;letter-spacing:.04em;}
+.b-grande {background:#ECFDF5;color:#065F46;border-color:#6EE7B7;}
+.b-medio  {background:#EFF6FF;color:#1E40AF;border-color:#BFDBFE;}
+.b-pequeno{background:#FFFBEB;color:#78350F;border-color:#FDE68A;}
+.b-online {background:#ECFDF5;color:#065F46;border-color:#6EE7B7;}
+.b-city   {background:var(--bg);color:var(--ink2);border-color:var(--line2);}
+
+.card-name{font-size:12px;font-weight:800;color:var(--ink);letter-spacing:-.2px;line-height:1.25;margin-bottom:1px;}
+.card-cnpj{font-size:10px;color:var(--ink3);font-weight:500;}
+
+.card-body{padding:9px 13px;flex:1;display:flex;flex-direction:column;gap:5px;}
+.ir{display:flex;align-items:flex-start;gap:5px;}
+.ii{font-size:9px;color:var(--ink3);flex-shrink:0;line-height:1.9;width:12px;text-align:center;font-weight:700;}
+.it{font-size:11px;color:var(--ink2);font-weight:500;line-height:1.5;flex:1;}
+.it strong{color:var(--ink);font-weight:700;}
+.it a{color:var(--green-m);font-weight:600;}
+.it a:hover{text-decoration:underline;}
+.it-obs{font-size:10px;color:var(--ink3);font-style:italic;}
+.it-rota{font-size:9px;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;font-weight:700;}
+
+/* Card footer */
+.card-foot{padding:9px 13px 11px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:7px;}
+.foot-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+
+.status-sel{
+  font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;
+  border-radius:20px;padding:4px 10px;cursor:pointer;outline:none;
+  border:1.5px solid;transition:all .15s;flex-shrink:0;
+}
+.st-novo-sel     {background:#EFF6FF;color:#1D4ED8;border-color:#BFDBFE;}
+.st-negoc-sel    {background:#FFFBEB;color:#92400E;border-color:#FDE68A;}
+.st-proposta-sel {background:#FFF7ED;color:#C2410C;border-color:#FDBA74;}
+.st-ativo-sel    {background:#ECFDF5;color:#065F46;border-color:#6EE7B7;}
+.st-desq-sel     {background:#F9FAFB;color:#6B7280;border-color:#D1D5DB;}
+
+.date-inp{
+  font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;
+  border:1.5px solid var(--line2);border-radius:7px;padding:4px 7px;
+  color:var(--ink2);background:var(--white);cursor:pointer;outline:none;
+  transition:border-color .15s;flex-shrink:0;
+}
+.date-inp:focus{border-color:var(--green-m);}
+
+.lc-badge{font-size:10px;font-weight:600;border-radius:6px;padding:2px 7px;}
+.lc-ok   {background:#F0FDF4;color:#166534;}
+.lc-warn {background:#FFFBEB;color:#92400E;}
+.lc-alert{background:#FEF2F2;color:#991B1B;}
+.lc-none {color:var(--ink3);font-size:10px;font-weight:500;}
+
+.motivo-sel{
+  font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;
+  border:1.5px solid var(--line2);border-radius:7px;padding:4px 7px;
+  color:var(--ink2);background:var(--white);outline:none;width:100%;
+}
+
+.btn-arch{
+  font-family:'Montserrat',sans-serif;font-size:9px;font-weight:800;
+  border:1.5px solid var(--line2);border-radius:20px;padding:3px 9px;
+  background:var(--white);color:var(--ink3);cursor:pointer;
+  transition:all .15s;text-transform:uppercase;letter-spacing:.04em;
+  margin-left:auto;flex-shrink:0;
+}
+.btn-arch:hover{background:var(--red-lt);color:var(--red);border-color:rgba(212,64,64,.3);}
+
+.btn-restore{
+  font-family:'Montserrat',sans-serif;font-size:9px;font-weight:800;
+  border:1.5px solid var(--green-bd);border-radius:20px;padding:3px 9px;
+  background:var(--green-lt);color:var(--green);cursor:pointer;
+  transition:all .15s;text-transform:uppercase;letter-spacing:.04em;
+}
+.btn-restore:hover{background:var(--green-m);color:#fff;border-color:var(--green-m);}
+
+.arch-section{background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:16px;}
+.arch-section-title{font-size:12px;font-weight:800;color:var(--ink2);margin-bottom:10px;}
+
+/* Mobile overlay */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:40;}
+
+@media(max-width:768px){
+  .sidebar{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%);box-shadow:6px 0 32px rgba(0,0,0,.3);}
+  .sidebar.open{transform:translateX(0);}
+  .overlay.show{display:block;}
+  .topbar-toggle{display:flex;}
+  .main{width:100%;}
+  .kpi-strip{padding:8px 12px;}
+  .content{padding:12px 12px 40px;}
+  .grid{grid-template-columns:1fr;}
+  .topbar{padding:0 12px;}
+}
+
+/* ── ADD PANEL ─────────────────────────────────── */
+.add-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.45);z-index:200;
+  align-items:center;justify-content:center;
+  padding:20px;
+}
+.add-overlay.show{display:flex;}
+.add-panel{
+  background:var(--white);border-radius:16px;
+  width:100%;max-width:580px;max-height:90vh;
+  overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.3);
+  display:flex;flex-direction:column;
+}
+.add-panel::-webkit-scrollbar{width:4px;}
+.add-panel::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px;}
+.add-hdr{
+  padding:18px 20px 14px;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;background:var(--white);z-index:1;
+}
+.add-hdr-left{}
+.add-hdr-title{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.2px;}
+.add-hdr-sub{font-size:11px;color:var(--ink3);margin-top:2px;}
+.add-close{
+  width:30px;height:30px;border-radius:8px;border:1px solid var(--line2);
+  background:var(--white);cursor:pointer;font-size:16px;color:var(--ink2);
+  display:flex;align-items:center;justify-content:center;transition:all .15s;
+  font-weight:300;line-height:1;
+}
+.add-close:hover{background:var(--bg);border-color:var(--line);}
+
+.add-body{padding:18px 20px;}
+
+/* Rota preview badge */
+.rota-preview{
+  display:none;align-items:center;gap:8px;
+  padding:10px 14px;border-radius:10px;margin-bottom:16px;
+  font-size:12px;font-weight:700;
+}
+.rota-preview.show{display:flex;}
+.rota-preview-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+/* Form grid */
+.add-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.add-field{display:flex;flex-direction:column;gap:5px;}
+.add-field.full{grid-column:1/-1;}
+.add-label{font-size:10px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.06em;}
+.add-label span{color:var(--red);}
+.add-inp,.add-sel,.add-textarea{
+  font-family:'Montserrat',sans-serif;font-size:12px;font-weight:500;
+  padding:9px 12px;border:1.5px solid var(--line2);border-radius:8px;
+  color:var(--ink);background:var(--white);outline:none;
+  transition:border-color .15s,box-shadow .15s;width:100%;
+}
+.add-inp:focus,.add-sel:focus,.add-textarea:focus{
+  border-color:var(--green-m);box-shadow:0 0 0 3px rgba(26,146,104,.1);
+}
+.add-inp::placeholder{color:var(--ink3);}
+.add-textarea{resize:vertical;min-height:60px;}
+.add-sel{cursor:pointer;}
+
+/* Porte pills */
+.porte-pills{display:flex;gap:8px;}
+.porte-pill{
+  flex:1;padding:8px;text-align:center;border-radius:8px;
+  border:1.5px solid var(--line2);cursor:pointer;
+  font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;
+  color:var(--ink2);background:var(--white);transition:all .15s;
+}
+.porte-pill:hover{border-color:var(--green-m);color:var(--green);}
+.porte-pill.sel-grande{background:#ECFDF5;color:#065F46;border-color:#6EE7B7;}
+.porte-pill.sel-medio {background:#EFF6FF;color:#1E40AF;border-color:#BFDBFE;}
+.porte-pill.sel-pequeno{background:#FFFBEB;color:#78350F;border-color:#FDE68A;}
+
+/* Divider */
+.add-div{grid-column:1/-1;height:1px;background:var(--line);margin:4px 0;}
+.add-section-label{grid-column:1/-1;font-size:9px;font-weight:800;color:var(--ink3);text-transform:uppercase;letter-spacing:.1em;}
+
+/* Footer */
+.add-foot{
+  padding:14px 20px;border-top:1px solid var(--line);
+  display:flex;gap:10px;align-items:center;
+  position:sticky;bottom:0;background:var(--white);
+}
+.btn-save{
+  flex:1;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:800;
+  padding:11px;border:none;border-radius:10px;
+  background:var(--green);color:#fff;cursor:pointer;
+  transition:background .15s;text-transform:uppercase;letter-spacing:.04em;
+}
+.btn-save:hover{background:var(--green-m);}
+.btn-save:disabled{background:var(--line2);cursor:not-allowed;}
+.btn-cancel{
+  font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;
+  padding:11px 18px;border:1.5px solid var(--line2);border-radius:10px;
+  background:var(--white);color:var(--ink2);cursor:pointer;transition:all .15s;
+}
+.btn-cancel:hover{border-color:var(--ink2);color:var(--ink);}
+
+/* Topbar add button */
+.btn-add-dist{
+  font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;
+  padding:7px 16px;border:none;border-radius:8px;
+  background:var(--green);color:#fff;cursor:pointer;
+  transition:background .15s;flex-shrink:0;
+  text-transform:uppercase;letter-spacing:.04em;
+}
+.btn-add-dist:hover{background:var(--green-m);}
+
+/* Success toast */
+.toast{
+  position:fixed;bottom:24px;right:24px;z-index:300;
+  background:var(--ink);color:#fff;
+  font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;
+  padding:12px 20px;border-radius:10px;
+  box-shadow:0 8px 32px rgba(0,0,0,.25);
+  transform:translateY(80px);opacity:0;
+  transition:transform .3s cubic-bezier(.22,1,.36,1),opacity .3s;
+  pointer-events:none;
+}
+.toast.show{transform:translateY(0);opacity:1;}
+
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- ═══════════ SIDEBAR ═══════════ -->
+<aside class="sidebar" id="sidebar">
+
+  <!-- Brand -->
+  <div class="sb-brand">
+    <div class="sb-brand-icon">CS</div>
+    <div class="sb-brand-text">
+      <div class="sb-brand-name">Care Systems</div>
+      <div class="sb-brand-sub">Linha Dental Med</div>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="sb-search">
+    <div class="sb-search-wrap">
+      <span class="sb-search-icon">&#9906;</span>
+      <input class="sb-search-inp" type="text" id="search" placeholder="Buscar distribuidor ou cidade..." oninput="applySearch(this.value)">
+    </div>
+  </div>
+
+  <!-- GROUP: Pipeline -->
+  <div class="sb-group">
+    <div class="sb-group-label">Pipeline Comercial</div>
+
+    <button class="sb-section-hdr open" id="sec-pipeline" onclick="toggleSection('pipeline')">
+      <div class="sb-section-icon">P</div>
+      <span class="sb-section-name">Status</span>
+      <span class="sb-section-arr">&#8963;</span>
+    </button>
+    <div class="sb-items open" id="items-pipeline">
+      <button class="sb-item active" onclick="filterStatus('all',this)">
+        <div class="sb-item-dot dot-all"></div>
+        <span class="sb-item-label">Todos</span>
+        <span class="sb-item-count" id="cnt-all">—</span>
+      </button>
+      <button class="sb-item" onclick="filterStatus('novo',this)">
+        <div class="sb-item-dot dot-novo"></div>
+        <span class="sb-item-label">Novo</span>
+        <span class="sb-item-count" id="cnt-novo">—</span>
+      </button>
+      <button class="sb-item" onclick="filterStatus('negoc',this)">
+        <div class="sb-item-dot dot-negoc"></div>
+        <span class="sb-item-label">Negociacao</span>
+        <span class="sb-item-count" id="cnt-negoc">—</span>
+      </button>
+      <button class="sb-item" onclick="filterStatus('proposta',this)">
+        <div class="sb-item-dot dot-proposta"></div>
+        <span class="sb-item-label">Proposta enviada</span>
+        <span class="sb-item-count" id="cnt-proposta">—</span>
+      </button>
+      <button class="sb-item" onclick="filterStatus('ativo',this)">
+        <div class="sb-item-dot dot-ativo"></div>
+        <span class="sb-item-label">Ativo</span>
+        <span class="sb-item-count" id="cnt-ativo">—</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="sb-div"></div>
+
+  <!-- GROUP: Porte -->
+  <div class="sb-group">
+    <div class="sb-group-label">Porte</div>
+
+    <button class="sb-section-hdr open" id="sec-porte" onclick="toggleSection('porte')">
+      <div class="sb-section-icon">E</div>
+      <span class="sb-section-name">Estrutura</span>
+      <span class="sb-section-arr">&#8963;</span>
+    </button>
+    <div class="sb-items open" id="items-porte">
+      <button class="sb-item active" onclick="filterPorte('all-porte',this)">
+        <div class="sb-item-dot dot-all"></div>
+        <span class="sb-item-label">Todos os portes</span>
+      </button>
+      <button class="sb-item" onclick="filterPorte('grande',this)">
+        <div class="sb-item-dot dot-grande"></div>
+        <span class="sb-item-label">Grande porte</span>
+        <span class="sb-item-count" id="cnt-grande">—</span>
+      </button>
+      <button class="sb-item" onclick="filterPorte('medio',this)">
+        <div class="sb-item-dot dot-medio"></div>
+        <span class="sb-item-label">Medio porte</span>
+        <span class="sb-item-count" id="cnt-medio">—</span>
+      </button>
+      <button class="sb-item" onclick="filterPorte('pequeno',this)">
+        <div class="sb-item-dot dot-pequeno"></div>
+        <span class="sb-item-label">Pequeno porte</span>
+        <span class="sb-item-count" id="cnt-pequeno">—</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="sb-div"></div>
+
+  <!-- GROUP: Rota -->
+  <div class="sb-group">
+    <div class="sb-group-label">Rota</div>
+
+    <button class="sb-section-hdr open" id="sec-rota" onclick="toggleSection('rota')">
+      <div class="sb-section-icon">R</div>
+      <span class="sb-section-name">Rotas otimizadas</span>
+      <span class="sb-section-arr">&#8963;</span>
+    </button>
+    <div class="sb-items open" id="items-rota">
+      <button class="sb-item active" onclick="filterRota('all-rota',this)">
+        <div class="sb-item-dot dot-all"></div>
+        <span class="sb-item-label">Todas as rotas</span>
+      </button>
+      <button class="sb-item" onclick="filterRota('rota1',this)">
+        <div class="sb-item-dot dot-r1"></div>
+        <span class="sb-item-label">Rota 1 — Norte PR</span>
+        <span class="sb-item-count" id="cnt-r1">—</span>
+      </button>
+      <button class="sb-item" onclick="filterRota('rota2',this)">
+        <div class="sb-item-dot dot-r2"></div>
+        <span class="sb-item-label">Rota 2 — Leste PR</span>
+        <span class="sb-item-count" id="cnt-r2">—</span>
+      </button>
+      <button class="sb-item" onclick="filterRota('rota3',this)">
+        <div class="sb-item-dot dot-r3"></div>
+        <span class="sb-item-label">Rota 3 — Oeste PR</span>
+        <span class="sb-item-count" id="cnt-r3">—</span>
+      </button>
+      <button class="sb-item" onclick="filterRota('rota4',this)">
+        <div class="sb-item-dot dot-r4"></div>
+        <span class="sb-item-label">Rota 4 — Centro-Norte</span>
+        <span class="sb-item-count" id="cnt-r4">—</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="sb-div"></div>
+
+  <!-- GROUP: Gestao -->
+  <div class="sb-group">
+    <div class="sb-group-label">Gestao</div>
+
+    <button class="sb-section-hdr" id="sec-arch" onclick="toggleSection('arch');filterStatus('desq',this.querySelector('.sb-section-name'))">
+      <div class="sb-section-icon">A</div>
+      <span class="sb-section-name">Arquivados</span>
+      <span class="sb-item-count" id="cnt-desq" style="margin-right:4px;">—</span>
+      <span class="sb-section-arr">&#8963;</span>
+    </button>
+  </div>
+
+  <div class="sb-footer">
+    <div class="sb-footer-label">Sede</div>
+    <div class="sb-footer-addr">Care Systems Bio Enzymes<br>Sao Joao da Boa Vista, SP</div>
+  </div>
+
+</aside>
+
+<!-- Mobile overlay -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<div class="main">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <button class="topbar-toggle" onclick="toggleSidebar()">&#9776;</button>
+    <div class="topbar-ctx">
+      <div class="topbar-title" id="ctx-title">Todos os distribuidores</div>
+      <div class="topbar-sub" id="ctx-sub">Parana — LIPAX ENZYME + LIPAX CLEAN</div>
+    </div>
+    <button class="btn-add-dist" onclick="openAdd()">+ Novo distribuidor</button>
+    <div class="topbar-cnt" id="topbar-cnt">— distribuidoras</div>
+  </div>
+
+  <!-- KPI strip -->
+  <div class="kpi-strip">
+    <div class="kpi hi"><div class="kpi-v" id="kpi-total">—</div><div class="kpi-l">Total</div></div>
+    <div class="kpi">   <div class="kpi-v" id="kpi-ativo">—</div><div class="kpi-l">Ativos</div></div>
+    <div class="kpi">   <div class="kpi-v" id="kpi-negoc">—</div><div class="kpi-l">Negociacao</div></div>
+    <div class="kpi">   <div class="kpi-v" id="kpi-prop">—</div><div class="kpi-l">Proposta</div></div>
+    <div class="kpi">   <div class="kpi-v" id="kpi-novo">—</div><div class="kpi-l">Novos</div></div>
+    <div class="kpi warn"><div class="kpi-v" id="kpi-alert">—</div><div class="kpi-l">Alerta 30d+</div></div>
+  </div>
+
+  <!-- Content -->
+  <div class="content" id="content"></div>
+
+</div>
+</div>
+<script>
+const DATA = [
+  {city:'Londrina',region:'Norte PR',rota:'rota1',porte:'grande',name:'Dental Shop',cnpj:'10.710.985/0001-00',addr:'R. Espirito Santo, 786, Centro, Londrina, PR',tel:'(43) 3336-1001',wapp:'(43) 99150-4400',site:'dentalshoplondrina.com.br',ig:'@dentalshoplondrina',obs:'e-commerce proprio, fundada 2009'},
+  {city:'Londrina',region:'Norte PR',rota:'rota1',porte:'grande',name:'Dental Mussi',cnpj:'05.780.617/0001-90',addr:'R. Alagoas, 381, Centro, Londrina, PR',tel:'(43) 3025-1555',wapp:'',site:'',ig:'@dentalmussi',obs:'Atacadista, assistencia tecnica'},
+  {city:'Londrina',region:'Norte PR',rota:'rota1',porte:'grande',name:'Dental Odonthomaz',cnpj:'82.284.563/0001-13',addr:'R. Cambara, 340/348, Centro, Londrina, PR',tel:'(43) 3031-1400',wapp:'(43) 99875-0339',site:'dentalodonthomaz.com.br',ig:'@dental.odonthomaz',obs:'20+ anos, rede 3 lojas, e-commerce, 5% OFF Pix'},
+  {city:'Londrina',region:'Norte PR',rota:'rota1',porte:'medio',name:'Comprox Dental',cnpj:'15.060.425/0001-63',addr:'Av. Rio de Janeiro, 1614, Centro, Londrina, PR',tel:'',wapp:'',site:'',ig:'',obs:'Confirmar contato via visita presencial'},
+  {city:'Londrina',region:'Norte PR',rota:'rota1',porte:'medio',name:'Mega Dental',cnpj:'25.341.162/0001-14',addr:'R. Dr. Lisimaco F. da Costa, 225, Londrina, PR',tel:'(43) 3376-6379',wapp:'',site:'',ig:'',obs:'Importacao, exportacao, atacado'},
+  {city:'Londrina',region:'Norte PR',rota:'rota1',porte:'pequeno',name:'BhomeShop',cnpj:'42.980.194/0001-89',addr:'R. Topazio, 78, Londrina, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Londrina',region:'Norte PR',rota:'rota1',porte:'pequeno',name:'Dental Classe A',cnpj:'33.476.366/0001-90',addr:'R. Goias, 1255, Centro, Londrina, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Londrina',region:'Norte PR',rota:'rota1',porte:'pequeno',name:'Oralfix Comercial',cnpj:'64.156.376/0001-72',addr:'Av. Angelina Ricci Vezozzo, 1255, Londrina, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Londrina',region:'Norte PR',rota:'rota1',porte:'pequeno',name:'A.S. Technology Componentes',cnpj:'01.786.547/0004-70',addr:'R. Dr. Elias Cesar, 55, Sala 406, Londrina, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Rolandia',region:'Norte PR',rota:'rota1',porte:'pequeno',name:'Senil Comercial e Representacoes',cnpj:'03.995.132/0001-99',addr:'R. Santos Dumont, 305, Centro, Rolandia, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Cambe',region:'Norte PR',rota:'rota1',porte:'pequeno',name:'Bio Logica Distribuidora',cnpj:'06.175.908/0001-12',addr:'R. Prof. Zelda C. Cursi Mastriani, 265/A, Cambe, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Cambe',region:'Norte PR',rota:'rota1',porte:'pequeno',name:'Superatac Distribuidora',cnpj:'09.664.495/0001-28',addr:'R. Prof. Zelda C. Cursi Mastriani, 265/C, Cambe, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Arapongas',region:'Norte PR',rota:'rota1',porte:'medio',name:'Dental Panacci',cnpj:'50.613.113/0001-30',addr:'R. Garcas, 1593, Arapongas, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Arapongas',region:'Norte PR',rota:'rota1',porte:'pequeno',name:'Dental Inga',cnpj:'12.607.876/0001-80',addr:'R. Pinta Roxo, 73, Arapongas, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Arapongas',region:'Norte PR',rota:'rota1',porte:'pequeno',name:'Dental Mimo',cnpj:'82.196.379/0001-11',addr:'R. Garcas, 980, Centro, Arapongas, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Apucarana',region:'Norte PR',rota:'rota1',porte:'medio',name:'F5 Distribuidora',cnpj:'57.048.285/0001-58',addr:'Av. Santa Catarina, 541, Apucarana, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Apucarana',region:'Norte PR',rota:'rota1',porte:'pequeno',name:'VRM Import',cnpj:'45.157.605/0001-29',addr:'Av. Santa Catarina, 541, Sala 02, Apucarana, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Apucarana',region:'Norte PR',rota:'rota1',porte:'pequeno',name:'Zap Dental',cnpj:'13.742.178/0001-50',addr:'R. Manoel Sanches G. Horta, 190, Apucarana, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Apucarana',region:'Norte PR',rota:'rota1',porte:'pequeno',name:'Nossa Odontomedica',cnpj:'12.095.582/0001-16',addr:'Av. Santa Catarina, 541, Apucarana, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Apucarana',region:'Norte PR',rota:'rota1',porte:'pequeno',name:'Acioli Machado Comercio',cnpj:'58.249.465/0001-60',addr:'R. Osorio Ribas de Paula, 614, Apucarana, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Apucarana',region:'Norte PR',rota:'rota1',porte:'pequeno',name:'Schavarski e Acioli Produtos Odontologicos',cnpj:'51.858.303/0001-80',addr:'R. Dr. Nagib Daher, 1084, Apucarana, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Maringa',region:'Norte PR',rota:'rota1',porte:'grande',name:'Suda Dental',cnpj:'46.419.023/0002-17',addr:'Av. Duque de Caxias, 288/251, Maringa, PR',tel:'(44) 4001-xxxx',wapp:'',site:'sudadental.com.br',ig:'@sudadental',obs:'1.225 seguidores Instagram'},
+  {city:'Maringa',region:'Norte PR',rota:'rota1',porte:'grande',name:'Surya Dental',cnpj:'00.814.559/0001-55',addr:'Av. Melvim Jones, 823, Maringa, PR',tel:'',wapp:'',site:'',ig:'',obs:'Grande porte, CNPJ antigo'},
+  {city:'Maringa',region:'Norte PR',rota:'rota1',porte:'grande',name:'Dental Bocao',cnpj:'05.298.783/0001-55',addr:'Av. Paissandu, 92, Sala 01, Maringa, PR',tel:'',wapp:'',site:'',ig:'',obs:'Multiplo CNAE: medicamentos + hospitalar + odonto'},
+  {city:'Maringa',region:'Norte PR',rota:'rota1',porte:'medio',name:'Polsaque Dental',cnpj:'64.038.115/0001-58',addr:'R. Rosana, 129, Maringa, PR',tel:'',wapp:'',site:'',ig:'',obs:'Materiais medico-cirurgico-hospitalares'},
+  {city:'Maringa',region:'Norte PR',rota:'rota1',porte:'medio',name:'Thronus Equipamentos Odontologicos',cnpj:'57.748.163/0001-74',addr:'R. Neo Alves Martins, 3341, Maringa, PR',tel:'',wapp:'',site:'',ig:'',obs:'Atacadista equipamentos odonto-medico-hospitalares'},
+  {city:'Maringa',region:'Norte PR',rota:'rota1',porte:'medio',name:'Oraltex',cnpj:'27.410.988/0001-13',addr:'Av. Mandacaru, 3189, Maringa, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Maringa',region:'Norte PR',rota:'rota1',porte:'medio',name:'Dental Helyon Central de Compras',cnpj:'20.305.333/0001-36',addr:'R. Pioneiro Basilio Moreschi, 463, Maringa, PR',tel:'',wapp:'',site:'',ig:'',obs:'Central de compras odontologicas'},
+  {city:'Maringa',region:'Norte PR',rota:'rota1',porte:'medio',name:'Dental Maringa',cnpj:'14.278.868/0001-62',addr:'Av. Nildo Ribeiro da Rocha, 4982, Maringa, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Maringa',region:'Norte PR',rota:'rota1',porte:'pequeno',name:'Den-Tal Comercio',cnpj:'35.296.617/0001-50',addr:'Av. Colombo, 5790, Sala 05, Maringa, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Maringa',region:'Norte PR',rota:'rota1',porte:'pequeno',name:'Odonto Maringa',cnpj:'37.249.978/0001-67',addr:'Av. Duque de Caxias, 1295, Sala 07, Maringa, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Cianorte',region:'Norte PR',rota:'rota1',porte:'medio',name:'Dental Cianorte',cnpj:'05.386.193/0001-49',addr:'R. Pedro Alvares Cabral, 1270, Cianorte, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Cianorte',region:'Norte PR',rota:'rota1',porte:'pequeno',name:'Odontoterra',cnpj:'19.437.260/0001-83',addr:'R. Pedro Alvares Cabral, 1302, Cianorte, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Paranavaí',region:'Norte PR',rota:'rota1',porte:'grande',name:'Imed Odonto-Medico-Hospitalar',cnpj:'76.561.065/0001-95',addr:'R. Parana, 1151, Centro, Paranavaí, PR',tel:'',wapp:'',site:'',ig:'',obs:'CNPJ antigo, distribuidor consolidado'},
+  {city:'Paranavaí',region:'Norte PR',rota:'rota1',porte:'medio',name:'Dental Parana',cnpj:'08.769.423/0001-56',addr:'Av. Parana, 2001, Paranavaí, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Paranavaí',region:'Norte PR',rota:'rota1',porte:'pequeno',name:'Itaca Produtos Medicos e Odontologicos',cnpj:'23.476.803/0001-40',addr:'Av. Parana, 1432, Paranavaí, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Ponta Grossa',region:'Leste PR',rota:'rota2',porte:'grande',name:'Pontal Dental',cnpj:'01.946.395/0001-08',addr:'Av. Visconde de Maua, 1695, Ponta Grossa, PR',tel:'',wapp:'',site:'',ig:'',obs:'CNPJ antigo, distribuidor consolidado'},
+  {city:'Ponta Grossa',region:'Leste PR',rota:'rota2',porte:'medio',name:'Dente Saudavel Comercio',cnpj:'11.316.050/0001-32',addr:'R. Dr. Colares, 1121, Ponta Grossa, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Ponta Grossa',region:'Leste PR',rota:'rota2',porte:'pequeno',name:'Dental Campos Gerais',cnpj:'33.651.792/0001-40',addr:'R. Sao Paulo, 750, Ponta Grossa, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Curitiba',region:'Leste PR',rota:'rota2',porte:'grande',name:'Sul Dental Curitiba',cnpj:'81.590.133/0001-09',addr:'R. Marechal Deodoro, 630, Centro, Curitiba, PR',tel:'',wapp:'',site:'',ig:'',obs:'CNPJ antigo, distribuidor consolidado'},
+  {city:'Curitiba',region:'Leste PR',rota:'rota2',porte:'grande',name:'Eurodonto Importacao e Exportacao',cnpj:'08.639.512/0001-04',addr:'R. Mexico, 852, Bacacheri, Curitiba, PR',tel:'',wapp:'',site:'',ig:'',obs:'Importacao/exportacao, atacado'},
+  {city:'Curitiba',region:'Leste PR',rota:'rota2',porte:'grande',name:'Dental Curitibana',cnpj:'08.144.641/0001-21',addr:'R. XV de Novembro, 168, Centro, Curitiba, PR',tel:'',wapp:'',site:'',ig:'',obs:'Localizacao premium'},
+  {city:'Curitiba',region:'Leste PR',rota:'rota2',porte:'medio',name:'Smile Shop',cnpj:'55.992.601/0001-10',addr:'Av. Parana, 3885, Curitiba, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Curitiba',region:'Leste PR',rota:'rota2',porte:'medio',name:'A Dental Produtos Odontologicos',cnpj:'35.168.518/0001-13',addr:'R. Francisco Zandoná, 128, Curitiba, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Curitiba',region:'Leste PR',rota:'rota2',porte:'medio',name:'Healthcare Produtos Medicos e Odontologicos',cnpj:'46.405.555/0001-14',addr:'R. Padre Anchieta, 1691, Curitiba, PR',tel:'',wapp:'',site:'',ig:'',obs:'Medico e odontologico'},
+  {city:'Curitiba',region:'Leste PR',rota:'rota2',porte:'medio',name:'Odonto Store',cnpj:'45.501.732/0001-01',addr:'R. Castro, 294, Agua Verde, Curitiba, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Curitiba',region:'Leste PR',rota:'rota2',porte:'medio',name:'AMC Distribuidora',cnpj:'29.152.407/0001-16',addr:'R. Itatiaia, 845, Portao, Curitiba, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Curitiba',region:'Leste PR',rota:'rota2',porte:'medio',name:'RS Dental Orthosiso',cnpj:'34.559.307/0001-49',addr:'Av. Visconde de Guarapuava, 783, Curitiba, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Curitiba',region:'Leste PR',rota:'rota2',porte:'pequeno',name:'KJS Comercial Atacadista',cnpj:'63.571.014/0001-85',addr:'R. Jose Hauer, 337, Curitiba, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Curitiba',region:'Leste PR',rota:'rota2',porte:'pequeno',name:'Dental AX',cnpj:'54.862.477/0001-05',addr:'Av. Brasilia, 5030, Curitiba, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Curitiba',region:'Leste PR',rota:'rota2',porte:'pequeno',name:'Bluex Dental',cnpj:'52.298.830/0001-40',addr:'R. Marte, 437, Curitiba, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Curitiba',region:'Leste PR',rota:'rota2',porte:'pequeno',name:'Dental Shine',cnpj:'51.879.180/0001-64',addr:'R. Chile, 2211, Reboucas, Curitiba, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Curitiba',region:'Leste PR',rota:'rota2',porte:'pequeno',name:'Odontocuritibana',cnpj:'49.113.402/0001-91',addr:'R. Guacui, 5511, Curitiba, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Pinhais / SJP',region:'Leste PR',rota:'rota2',porte:'medio',name:'Dental Open',cnpj:'08.849.206/0001-00',addr:'R. Euclides da Cunha, 1600, Pinhais, PR',tel:'',wapp:'',site:'',ig:'',obs:'CNPJ antigo'},
+  {city:'Pinhais / SJP',region:'Leste PR',rota:'rota2',porte:'medio',name:'Dental Prime',cnpj:'21.504.525/0001-34',addr:'R. Osorio Duque-Estrada, 763, Pinhais, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Pinhais / SJP',region:'Leste PR',rota:'rota2',porte:'medio',name:'Dental Sao Jose',cnpj:'13.950.503/0001-70',addr:'R. Colombo, 1876, Sao Jose dos Pinhais, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Pinhais / SJP',region:'Leste PR',rota:'rota2',porte:'pequeno',name:'Dhalign',cnpj:'42.640.372/0001-22',addr:'R. Manoel Bandeira, 585, Pinhais, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Pinhais / SJP',region:'Leste PR',rota:'rota2',porte:'pequeno',name:'SDental',cnpj:'12.039.306/0001-30',addr:'R. Rio Parana, 246, Pinhais, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Pinhais / SJP',region:'Leste PR',rota:'rota2',porte:'pequeno',name:'Dental Ideal',cnpj:'50.828.841/0001-60',addr:'R. Visconde do Rio Branco, 1708, Sao Jose dos Pinhais, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Paranagua',region:'Leste PR',rota:'rota2',porte:'medio',name:'Dental Paranaense',cnpj:'30.322.626/0001-85',addr:'R. Marechal Deodoro, 149, Paranagua, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Paranagua',region:'Leste PR',rota:'rota2',porte:'pequeno',name:'Lufran Servicos Odontologicos',cnpj:'51.204.868/0001-44',addr:'R. Baronesa do Cerro Azul, 1969, Paranagua, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Paranagua',region:'Leste PR',rota:'rota2',porte:'pequeno',name:'DHPro',cnpj:'08.002.373/0001-03',addr:'R. Comendador Correia Junior, 567, Paranagua, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Paranagua',region:'Leste PR',rota:'rota2',porte:'pequeno',name:'MM Produtos Medicos e Odontologicos',cnpj:'13.013.237/0001-59',addr:'R. Baronesa do Cerro Azul, 1233, Paranagua, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Campo Largo',region:'Leste PR',rota:'rota2',porte:'medio',name:'Ideal Dental',cnpj:'24.664.976/0001-27',addr:'R. Barao do Rio Branco, 1410, Campo Largo, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Campo Largo',region:'Leste PR',rota:'rota2',porte:'pequeno',name:'DSP Biomedical',cnpj:'14.582.577/0001-63',addr:'R. Joao Florindo Zanetti, 603, Campo Largo, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Sto. Ant. Platina',region:'Centro-Norte PR',rota:'rota4',porte:'medio',name:'Dental Berith',cnpj:'57.642.694/0001-88',addr:'R. Munhoz da Rocha, 760, Santo Antonio da Platina, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Sto. Ant. Platina',region:'Centro-Norte PR',rota:'rota4',porte:'medio',name:'Dental Integral',cnpj:'50.591.089/0001-86',addr:'R. Dep. Jose Afonso, 532-A, Santo Antonio da Platina, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Sto. Ant. Platina',region:'Centro-Norte PR',rota:'rota4',porte:'pequeno',name:'Sousafix Tecnologia em Implantes',cnpj:'20.752.961/0001-60',addr:'R. Tiradentes, 572, Santo Antonio da Platina, PR',tel:'',wapp:'',site:'',ig:'',obs:'Nicho: implantes, atacado'},
+  {city:'Sto. Ant. Platina',region:'Centro-Norte PR',rota:'rota4',porte:'pequeno',name:'Authentic Top',cnpj:'18.343.118/0001-88',addr:'R. Ver. Jose Tanko, 165, Santo Antonio da Platina, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Siqueira Campos',region:'Centro-Norte PR',rota:'rota4',porte:'pequeno',name:'Medvel',cnpj:'19.621.802/0001-47',addr:'R. Marechal Floriano Peixoto, 1422, Siqueira Campos, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Ibaiti',region:'Centro-Norte PR',rota:'rota4',porte:'medio',name:'Dental Leao',cnpj:'57.784.329/0001-08',addr:'Av. Gov. Paulo Cruz Pimentel, 723, Ibaiti, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Ibaiti',region:'Centro-Norte PR',rota:'rota4',porte:'medio',name:'Dental Comfort',cnpj:'49.926.571/0001-40',addr:'Av. Gov. Paulo Cruz Pimentel, 1330, Ibaiti, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Cascavel',region:'Oeste PR',rota:'rota3',porte:'grande',name:'Dental Foz',cnpj:'09.047.323/0002-96',addr:'R. Presidente Bernardes, 2000, Centro, Cascavel, PR',tel:'',wapp:'',site:'',ig:'',obs:'Tambem presente em Foz do Iguacu'},
+  {city:'Cascavel',region:'Oeste PR',rota:'rota3',porte:'medio',name:'IIPharm Solucoes em Odontologia',cnpj:'51.686.135/0001-93',addr:'R. Flor-da-Serra, 1051, Cascavel, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Cascavel',region:'Oeste PR',rota:'rota3',porte:'medio',name:'Fusao Dental',cnpj:'10.633.441/0001-84',addr:'Av. Brasil, 8594, Cascavel, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Cascavel',region:'Oeste PR',rota:'rota3',porte:'medio',name:'Dental Kosmos',cnpj:'78.387.156/0001-64',addr:'R. Uruguai, 1235, Cascavel, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Cascavel',region:'Oeste PR',rota:'rota3',porte:'pequeno',name:'Zircon Dental',cnpj:'60.949.491/0001-43',addr:'R. Visconde do Rio Branco, 3241, Cascavel, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Cascavel',region:'Oeste PR',rota:'rota3',porte:'pequeno',name:'G.L. Poletto',cnpj:'60.708.474/0001-14',addr:'R. Visconde do Rio Branco, 3241, Cascavel, PR',tel:'',wapp:'',site:'',ig:'',obs:'Mesmo endereco que Zircon Dental'},
+  {city:'Cascavel',region:'Oeste PR',rota:'rota3',porte:'pequeno',name:'Perfect Pro Comercio',cnpj:'57.598.552/0001-60',addr:'R. das Palmeiras, 3267, Cascavel, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Foz do Iguacu',region:'Oeste PR',rota:'rota3',porte:'grande',name:'Dental Cataratas',cnpj:'18.464.499/0001-53',addr:'R. Santos Dumont, 1524, Foz do Iguacu, PR',tel:'',wapp:'',site:'',ig:'',obs:'Referencia regional em Foz do Iguacu'},
+  {city:'Foz do Iguacu',region:'Oeste PR',rota:'rota3',porte:'medio',name:'LH Produtos Odontologicos',cnpj:'47.258.261/0001-70',addr:'R. Pedro Joas Aires dos Santos, 613, Foz do Iguacu, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Foz do Iguacu',region:'Oeste PR',rota:'rota3',porte:'medio',name:'Dental Sul Distribuidora',cnpj:'10.600.372/0001-02',addr:'R. das Missoes, 2433, Foz do Iguacu, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Foz do Iguacu',region:'Oeste PR',rota:'rota3',porte:'medio',name:'Dental Foz (Foz)',cnpj:'09.047.323/0001-05',addr:'R. Marechal Floriano Peixoto, 1715, Foz do Iguacu, PR',tel:'',wapp:'',site:'',ig:'',obs:'Matriz de Foz'},
+  {city:'Toledo',region:'Oeste PR',rota:'rota3',porte:'medio',name:'Dentalmax',cnpj:'19.982.997/0001-50',addr:'R. Almirante Barroso, 2757, Toledo, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Toledo',region:'Oeste PR',rota:'rota3',porte:'medio',name:'Odontosul',cnpj:'04.971.211/0001-22',addr:'R. Bento Munhoz da R. Netto, 2304, Toledo, PR',tel:'',wapp:'',site:'',ig:'',obs:'CNPJ antigo, distribuidora consolidada'},
+  {city:'Toledo',region:'Oeste PR',rota:'rota3',porte:'pequeno',name:'Brancher Produtos Odontologicos',cnpj:'56.365.735/0001-73',addr:'R. Dom Pedro II, 2789, Toledo, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Toledo',region:'Oeste PR',rota:'rota3',porte:'pequeno',name:'Dental Premium',cnpj:'35.215.257/0001-45',addr:'R. Crissiumal, 2175, Toledo, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Francisco Beltrao',region:'Oeste PR',rota:'rota3',porte:'medio',name:'Odontomedi',cnpj:'06.194.440/0001-03',addr:'Av. Luiz Antonio Faedo, 1612, Francisco Beltrao, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Francisco Beltrao',region:'Oeste PR',rota:'rota3',porte:'medio',name:'Dental Med Plus',cnpj:'55.675.690/0001-70',addr:'R. Campo Largo, 1216, Francisco Beltrao, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Pato Branco',region:'Oeste PR',rota:'rota3',porte:'grande',name:'Emporio Dental',cnpj:'05.276.771/0001-20',addr:'Av. Brasil, 1417, Pato Branco, PR',tel:'',wapp:'',site:'',ig:'',obs:'2 filiais, referencia no SW do PR'},
+  {city:'Pato Branco',region:'Oeste PR',rota:'rota3',porte:'medio',name:'Dental Big',cnpj:'03.903.315/0001-37',addr:'R. Ibipara, 507, Pato Branco, PR',tel:'',wapp:'',site:'',ig:'',obs:'CNPJ antigo, distribuidora consolidada'},
+  {city:'Guarapuava',region:'Oeste PR',rota:'rota3',porte:'grande',name:'Odonthomaz Guarapuava',cnpj:'13.383.152/0001-62',addr:'R. Azevedo Portugal, 753, Guarapuava, PR',tel:'(42) 3627-6051',wapp:'',site:'dentalodonthomaz.com.br',ig:'@dental.odonthomaz',obs:'Filial da rede Dental Odonthomaz'},
+  {city:'Guarapuava',region:'Oeste PR',rota:'rota3',porte:'medio',name:'Dental Store',cnpj:'23.074.298/0001-80',addr:'R. Benjamin Constant, 910, Guarapuava, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+  {city:'Guarapuava',region:'Oeste PR',rota:'rota3',porte:'medio',name:'Dentalmax Guarapuava',cnpj:'57.344.136/0001-36',addr:'R. Marechal Floriano Peixoto, 1866, Guarapuava, PR',tel:'',wapp:'',site:'',ig:'',obs:''},
+];
+
+function store(){ try{return JSON.parse(localStorage.getItem('cs6')||'{}')}catch(e){return{}} }
+function save(s){ try{localStorage.setItem('cs6',JSON.stringify(s))}catch(e){} }
+function getC(cnpj){ return store()[cnpj]||{status:'novo',lastContact:'',motivo:''} }
+function setC(cnpj,d){ var s=store(); s[cnpj]=Object.assign({},getC(cnpj),d); save(s); }
+
+var fStatus='all', fPorte='all-porte', fRota='all-rota', fSearch='';
+
+var ROTA_LABEL={rota1:'Rota 1',rota2:'Rota 2',rota3:'Rota 3',rota4:'Rota 4'};
+var ROTA_COLOR={rota1:'#34D399',rota2:'#60A5FA',rota3:'#F59E0B',rota4:'#A78BFA'};
+var STATUS_OPTS=[
+  {v:'novo',l:'Novo'},{v:'negoc',l:'Negociacao'},
+  {v:'proposta',l:'Proposta enviada'},{v:'ativo',l:'Ativo'},{v:'desq',l:'Descartado'}
+];
+var MOTIVOS=['Sem interesse','Ja tem fornecedor','Preco','Nao responde','Fechado','Fora do perfil','Outro'];
+
+function daysSince(ds){
+  if(!ds) return null;
+  return Math.floor((new Date()-new Date(ds))/864e5);
+}
+function lcBadge(ds){
+  var d=daysSince(ds);
+  if(d===null) return '<span class="lc-none">Sem contato registrado</span>';
+  if(d===0)    return '<span class="lc-badge lc-ok">Hoje</span>';
+  if(d<=7)     return '<span class="lc-badge lc-ok">'+d+'d atras</span>';
+  if(d<=30)    return '<span class="lc-badge lc-warn">'+d+'d sem contato</span>';
+  return '<span class="lc-badge lc-alert">'+d+'d sem contato</span>';
+}
+function safeKey(cnpj){ return cnpj.replace(/\./g,'').replace(/\//g,'').replace(/-/g,''); }
+function safeQ(s){ return (s||'').replace(/'/g,"\\'"); }
+
+function toggleSection(id){
+  var hdr=document.getElementById('sec-'+id);
+  var items=document.getElementById('items-'+id);
+  if(hdr) hdr.classList.toggle('open');
+  if(items) items.classList.toggle('open');
+}
+
+function updateCounts(){
+  var s=store();
+  var counts={all:0,novo:0,negoc:0,proposta:0,ativo:0,desq:0};
+  var porte={grande:0,medio:0,pequeno:0};
+  var rota={rota1:0,rota2:0,rota3:0,rota4:0};
+  var alert30=0;
+  DATA.forEach(function(d){
+    var c=s[d.cnpj]||{};
+    var st=c.status||'novo';
+    if(counts[st]!==undefined) counts[st]++;
+    if(st!=='desq'){
+      counts.all++;
+      porte[d.porte]=(porte[d.porte]||0)+1;
+      rota[d.rota]=(rota[d.rota]||0)+1;
+      if(daysSince(c.lastContact)>30) alert30++;
+    }
+  });
+  ['all','novo','negoc','proposta','ativo','desq'].forEach(function(k){
+    var el=document.getElementById('cnt-'+k);
+    if(el) el.textContent=counts[k]||0;
+  });
+  ['grande','medio','pequeno'].forEach(function(k){
+    var el=document.getElementById('cnt-'+k);
+    if(el) el.textContent=porte[k]||0;
+  });
+  [1,2,3,4].forEach(function(i){
+    var el=document.getElementById('cnt-r'+i);
+    if(el) el.textContent=rota['rota'+i]||0;
+  });
+  var kv={
+    'kpi-total':counts.all,'kpi-ativo':counts.ativo||0,'kpi-negoc':counts.negoc||0,
+    'kpi-prop':counts.proposta||0,'kpi-novo':counts.novo||0,'kpi-alert':alert30
+  };
+  Object.keys(kv).forEach(function(id){
+    var e=document.getElementById(id);
+    if(e) e.textContent=kv[id];
+  });
+}
+
+function buildCard(d){
+  var c=getC(d.cnpj);
+  var st=c.status||'novo';
+  var key=safeKey(d.cnpj);
+  var qcnpj=safeQ(d.cnpj);
+  var opts=STATUS_OPTS.map(function(o){
+    return '<option value="'+o.v+'"'+(o.v===st?' selected':'')+'>'+o.l+'</option>';
+  }).join('');
+  var mots='<option value="">Motivo...</option>'+MOTIVOS.map(function(m){
+    return '<option value="'+m+'"'+(c.motivo===m?' selected':'')+'>'+m+'</option>';
+  }).join('');
+  var bc=d.porte==='grande'?'b-grande':d.porte==='medio'?'b-medio':'b-pequeno';
+  var pl=d.porte==='grande'?'Grande':d.porte==='medio'?'Medio':'Pequeno';
+  var rl=ROTA_LABEL[d.rota]||d.rota;
+  var rc=ROTA_COLOR[d.rota]||'#888';
+  var showMot=st==='desq'?'flex':'none';
+
+  var html='<div class="card st-'+st+'" data-cnpj="'+d.cnpj+'">';
+  html+='<div class="card-strip"></div>';
+  html+='<div class="card-head">';
+  html+='<div class="card-badges">';
+  html+='<span class="badge '+bc+'">'+pl+'</span>';
+  html+='<span class="badge b-city">'+d.city+'</span>';
+  if(d.site) html+='<span class="badge b-online">Online</span>';
+  html+='</div>';
+  html+='<div class="card-name">'+d.name+'</div>';
+  html+='<div class="card-cnpj">CNPJ '+d.cnpj+'</div>';
+  html+='</div>';
+  html+='<div class="card-body">';
+  html+='<div class="ir"><span class="ii" style="font-size:8px;color:#bbb;font-weight:700;text-transform:uppercase;letter-spacing:.04em;">'+rl+'</span></div>';
+  html+='<div class="ir"><span class="ii">L</span><span class="it">'+d.addr+'</span></div>';
+  if(d.tel) html+='<div class="ir"><span class="ii">T</span><span class="it"><strong>'+d.tel+'</strong></span></div>';
+  if(d.wapp) html+='<div class="ir"><span class="ii">W</span><span class="it"><strong>WhatsApp '+d.wapp+'</strong></span></div>';
+  if(d.site) html+='<div class="ir"><span class="ii">@</span><span class="it"><a href="https://'+d.site+'" target="_blank">'+d.site+'</a></span></div>';
+  if(d.ig) html+='<div class="ir"><span class="ii">I</span><span class="it">'+d.ig+'</span></div>';
+  if(d.obs) html+='<div class="ir"><span class="ii">-</span><span class="it it-obs">'+d.obs+'</span></div>';
+  html+='</div>';
+  html+='<div class="card-foot">';
+  html+='<div class="foot-row">';
+  html+='<select class="status-sel st-'+st+'-sel" onchange="onStatus(this)">';
+  html+=opts;
+  html+='</select>';
+  html+='<button class="btn-arch" onclick="onArchive(this)">Arquivar</button>';
+  html+='</div>';
+  html+='<div class="foot-row" id="mot-'+key+'" style="display:'+showMot+'">';
+  html+='<select class="motivo-sel" onchange="onMotivo(this)">'+mots+'</select>';
+  html+='</div>';
+  html+='<div class="foot-row">';
+  html+='<input type="date" class="date-inp" value="'+(c.lastContact||'')+'" onchange="onDate(this)">';
+  html+='<div id="lc-'+key+'">'+lcBadge(c.lastContact)+'</div>';
+  html+='</div>';
+  html+='</div>';
+  html+='</div>';
+  return html;
+}
+
+function buildArchCard(d){
+  var c=getC(d.cnpj);
+  var html='<div class="card st-desq" data-cnpj="'+d.cnpj+'" style="opacity:.55;filter:grayscale(.5);">';
+  html+='<div class="card-strip"></div>';
+  html+='<div class="card-head">';
+  html+='<div class="card-name">'+d.name+'</div>';
+  html+='<div class="card-cnpj">'+d.city+' · CNPJ '+d.cnpj+'</div>';
+  if(c.motivo) html+='<div style="font-size:10px;color:#999;margin-top:3px;">Motivo: '+c.motivo+'</div>';
+  html+='</div>';
+  html+='<div class="card-foot"><div class="foot-row">';
+  html+='<button class="btn-restore" onclick="onRestore(this)">Restaurar</button>';
+  html+='</div></div></div>';
+  return html;
+}
+
+function getCnpjFromCard(el){
+  var card=el.closest('[data-cnpj]');
+  return card?card.getAttribute('data-cnpj'):'';
+}
+
+function onStatus(sel){
+  var cnpj=getCnpjFromCard(sel);
+  if(!cnpj) return;
+  var val=sel.value;
+  setC(cnpj,{status:val});
+  var card=sel.closest('.card');
+  if(card){
+    card.className='card st-'+val;
+    sel.className='status-sel st-'+val+'-sel';
+    var mr=document.getElementById('mot-'+safeKey(cnpj));
+    if(mr) mr.style.display=val==='desq'?'flex':'none';
+  }
+  updateCounts();
+}
+
+function onDate(inp){
+  var cnpj=getCnpjFromCard(inp);
+  if(!cnpj) return;
+  setC(cnpj,{lastContact:inp.value});
+  var el=document.getElementById('lc-'+safeKey(cnpj));
+  if(el) el.innerHTML=lcBadge(inp.value);
+  updateCounts();
+}
+
+function onMotivo(sel){
+  var cnpj=getCnpjFromCard(sel);
+  if(!cnpj) return;
+  setC(cnpj,{motivo:sel.value});
+}
+
+function onArchive(btn){
+  var cnpj=getCnpjFromCard(btn);
+  if(!cnpj) return;
+  setC(cnpj,{status:'desq'});
+  var card=btn.closest('.card');
+  if(card) card.style.display='none';
+  updateCounts();
+}
+
+function onRestore(btn){
+  var cnpj=getCnpjFromCard(btn);
+  if(!cnpj) return;
+  setC(cnpj,{status:'novo'});
+  updateCounts();
+  render();
+}
+
+function getVisible(){
+  var s=store();
+  return DATA.filter(function(d){
+    var st=(s[d.cnpj]&&s[d.cnpj].status)?s[d.cnpj].status:'novo';
+    if(fStatus==='desq') return st==='desq';
+    if(st==='desq') return false;
+    if(fStatus!=='all' && st!==fStatus) return false;
+    if(fPorte!=='all-porte' && d.porte!==fPorte) return false;
+    if(fRota!=='all-rota' && d.rota!==fRota) return false;
+    if(fSearch){
+      var q=fSearch.toLowerCase();
+      return d.name.toLowerCase().indexOf(q)>=0||
+             d.city.toLowerCase().indexOf(q)>=0||
+             d.cnpj.indexOf(q)>=0;
+    }
+    return true;
+  });
+}
+
+function render(){
+  var el=document.getElementById('content');
+  var s=store();
+
+  if(fStatus==='desq'){
+    var arch=DATA.filter(function(d){
+      return ((s[d.cnpj]&&s[d.cnpj].status)?s[d.cnpj].status:'novo')==='desq';
+    });
+    el.innerHTML=arch.length
+      ?'<div class="arch-section"><div class="arch-section-title">Arquivadas — '+arch.length+'</div><div class="grid">'+arch.map(buildArchCard).join('')+'</div></div>'
+      :'<div class="empty"><div class="empty-title">Nenhum arquivado</div></div>';
+    updateCounts();
+    return;
+  }
+
+  var visible=getVisible();
+  var tcnt=document.getElementById('topbar-cnt');
+  if(tcnt) tcnt.textContent=visible.length+' distribuidoras';
+
+  if(!visible.length){
+    el.innerHTML='<div class="empty"><div class="empty-title">Nenhuma distribuidora encontrada</div><div class="empty-sub">Ajuste os filtros ou a busca.</div></div>';
+    updateCounts();
+    return;
+  }
+
+  var cities=[];
+  visible.forEach(function(d){ if(cities.indexOf(d.city)<0) cities.push(d.city); });
+  var order=['rota1','rota4','rota2','rota3'];
+  cities.sort(function(a,b){
+    var fa=visible.find(function(d){return d.city===a;})||{};
+    var fb=visible.find(function(d){return d.city===b;})||{};
+    return order.indexOf(fa.rota||'')-order.indexOf(fb.rota||'');
+  });
+
+  el.innerHTML=cities.map(function(city){
+    var items=visible.filter(function(d){return d.city===city;});
+    var rc=ROTA_COLOR[items[0]?items[0].rota:'']||'#888';
+    var rl=ROTA_LABEL[items[0]?items[0].rota:'']||'';
+    return '<div class="city-grp">'+
+      '<div class="city-hdr">'+
+        '<h2>'+city+'</h2>'+
+        '<span class="city-count">'+items.length+' empresa'+(items.length>1?'s':'')+'</span>'+
+        '<span class="city-rota" style="background:'+rc+'18;color:'+rc+';border:1px solid '+rc+'44;">'+rl+'</span>'+
+        '<div class="city-line"></div>'+
+      '</div>'+
+      '<div class="grid">'+items.map(buildCard).join('')+'</div>'+
+    '</div>';
+  }).join('');
+
+  updateCounts();
+}
+
+function setSbActive(btn,sel){
+  document.querySelectorAll(sel).forEach(function(b){b.classList.remove('active');});
+  if(btn) btn.classList.add('active');
+}
+
+function filterStatus(s,btn){
+  fStatus=s;
+  var titles={all:'Todos os distribuidores',novo:'Novos',negoc:'Em negociacao',
+               proposta:'Proposta enviada',ativo:'Ativos',desq:'Arquivados'};
+  var t=document.getElementById('ctx-title');
+  if(t) t.textContent=titles[s]||s;
+  if(btn && btn.classList.contains('sb-item')) setSbActive(btn,'#items-pipeline .sb-item');
+  render();
+}
+
+function filterPorte(p,btn){
+  fPorte=p;
+  setSbActive(btn,'#items-porte .sb-item');
+  render();
+}
+
+function filterRota(r,btn){
+  fRota=r;
+  setSbActive(btn,'#items-rota .sb-item');
+  render();
+}
+
+function applySearch(v){
+  fSearch=v.trim();
+  render();
+}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+updateCounts();
+render();
+
+
+// ═══════════════════════════════════
+//  ADD DISTRIBUIDOR
+// ═══════════════════════════════════
+var addPorte = '';
+var addRota  = '';
+var addCity  = '';
+
+var ROTA_META = {
+  rota1:{label:'Rota 1 — Norte PR',    color:'#34D399', bg:'rgba(52,211,153,.12)'},
+  rota2:{label:'Rota 2 — Leste PR',    color:'#60A5FA', bg:'rgba(96,165,250,.12)'},
+  rota3:{label:'Rota 3 — Oeste PR',    color:'#F59E0B', bg:'rgba(245,158,11,.12)'},
+  rota4:{label:'Rota 4 — Centro-Norte',color:'#A78BFA', bg:'rgba(167,139,250,.12)'},
+};
+
+function openAdd(){
+  document.getElementById('addOverlay').classList.add('show');
+  resetForm();
+}
+function closeAdd(){
+  document.getElementById('addOverlay').classList.remove('show');
+}
+function overlayClick(e){
+  if(e.target===document.getElementById('addOverlay')) closeAdd();
+}
+
+function resetForm(){
+  addPorte=''; addRota=''; addCity='';
+  ['f-name','f-cnpj','f-addr','f-tel','f-wapp','f-site','f-ig','f-obs','f-city-manual'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.value='';
+  });
+  var cs=document.getElementById('f-city');
+  if(cs) cs.value='';
+  var rm=document.getElementById('f-rota-manual');
+  if(rm) rm.value='';
+  ['pp-grande','pp-medio','pp-pequeno'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.className='porte-pill';
+  });
+  hideRotaPreview();
+  document.getElementById('city-manual-wrap').style.display='none';
+  document.getElementById('rota-manual-wrap').style.display='none';
+  validateForm();
+}
+
+function selectPorte(p){
+  addPorte=p;
+  ['grande','medio','pequeno'].forEach(function(k){
+    var el=document.getElementById('pp-'+k);
+    if(el) el.className='porte-pill'+(k===p?' sel-'+k:'');
+  });
+  validateForm();
+}
+
+function onCityChange(val){
+  if(!val){ addCity=''; addRota=''; hideRotaPreview(); return; }
+  if(val==='__outro__|' || val.startsWith('__outro__')){
+    addCity=''; addRota='';
+    document.getElementById('city-manual-wrap').style.display='flex';
+    document.getElementById('rota-manual-wrap').style.display='flex';
+    hideRotaPreview();
+  } else {
+    var parts=val.split('|');
+    addCity=parts[0]||'';
+    addRota=parts[1]||'';
+    document.getElementById('city-manual-wrap').style.display='none';
+    document.getElementById('rota-manual-wrap').style.display='none';
+    showRotaPreview(addRota);
+  }
+  validateForm();
+}
+
+function onRotaManual(r){
+  addRota=r;
+  if(r) showRotaPreview(r);
+  else hideRotaPreview();
+  validateForm();
+}
+
+function showRotaPreview(rota){
+  var meta=ROTA_META[rota];
+  if(!meta) return;
+  var el=document.getElementById('rotaPreview');
+  var dot=document.getElementById('rotaPreviewDot');
+  var txt=document.getElementById('rotaPreviewText');
+  el.style.background=meta.bg;
+  el.style.color=meta.color;
+  el.style.border='1px solid '+meta.color+'44';
+  dot.style.background=meta.color;
+  txt.textContent='Atribuido automaticamente: '+meta.label;
+  el.classList.add('show');
+}
+function hideRotaPreview(){
+  document.getElementById('rotaPreview').classList.remove('show');
+}
+
+function maskCnpj(inp){
+  var v=inp.value.replace(/\D/g,'');
+  if(v.length>14) v=v.slice(0,14);
+  v=v.replace(/^(\d{2})(\d)/,'$1.$2');
+  v=v.replace(/^(\d{2})\.(\d{3})(\d)/,'$1.$2.$3');
+  v=v.replace(/\.(\d{3})(\d)/,'.$1/$2');
+  v=v.replace(/(\d{4})(\d)/,'$1-$2');
+  inp.value=v;
+}
+
+function validateForm(){
+  var name=document.getElementById('f-name').value.trim();
+  var cnpj=document.getElementById('f-cnpj').value.trim();
+  var city=addCity||(document.getElementById('f-city-manual').value.trim());
+  var ok=name.length>1 && cnpj.length>=11 && city && addPorte && addRota;
+  var btn=document.getElementById('btn-save');
+  if(btn) btn.disabled=!ok;
+}
+
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); },3000);
+}
+
+function saveDistribuidor(){
+  var name=document.getElementById('f-name').value.trim();
+  var cnpj=document.getElementById('f-cnpj').value.trim();
+  var city=addCity||document.getElementById('f-city-manual').value.trim();
+  var addr=document.getElementById('f-addr').value.trim();
+  var tel=document.getElementById('f-tel').value.trim();
+  var wapp=document.getElementById('f-wapp').value.trim();
+  var site=document.getElementById('f-site').value.trim();
+  var ig=document.getElementById('f-ig').value.trim();
+  var obs=document.getElementById('f-obs').value.trim();
+
+  if(!name||!cnpj||!city||!addPorte||!addRota){ return; }
+
+  var newDist={
+    city:city, region:'Adicionado manualmente',
+    rota:addRota, porte:addPorte,
+    name:name, cnpj:cnpj,
+    addr:addr, tel:tel, wapp:wapp,
+    site:site.replace(/^https?:\/\//,''), ig:ig, obs:obs
+  };
+
+  DATA.push(newDist);
+  setC(cnpj,{status:'novo',lastContact:'',motivo:''});
+
+  closeAdd();
+  fStatus='all'; fPorte='all-porte'; fRota='all-rota'; fSearch='';
+
+  // Reset sidebar active states
+  document.querySelectorAll('.sb-item').forEach(function(b){ b.classList.remove('active'); });
+  var first=document.querySelector('#items-pipeline .sb-item');
+  if(first) first.classList.add('active');
+  var ctx=document.getElementById('ctx-title');
+  if(ctx) ctx.textContent='Todos os distribuidores';
+
+  updateCounts();
+  render();
+
+  // Scroll to new card
+  setTimeout(function(){
+    var card=document.querySelector('[data-cnpj="'+cnpj+'"]');
+    if(card) card.scrollIntoView({behavior:'smooth',block:'center'});
+  },200);
+
+  var meta=ROTA_META[addRota];
+  showToast(name+' adicionado — '+(meta?meta.label:addRota));
+}
+
+</script>
+
+<!-- ══════════ ADD DISTRIBUIDOR PANEL ══════════ -->
+<div class="add-overlay" id="addOverlay" onclick="overlayClick(event)">
+  <div class="add-panel" id="addPanel">
+
+    <div class="add-hdr">
+      <div class="add-hdr-left">
+        <div class="add-hdr-title">Novo distribuidor</div>
+        <div class="add-hdr-sub">Rota atribuida automaticamente pela cidade</div>
+      </div>
+      <button class="add-close" onclick="closeAdd()">&#10005;</button>
+    </div>
+
+    <div class="add-body">
+
+      <!-- Rota preview -->
+      <div class="rota-preview" id="rotaPreview">
+        <div class="rota-preview-dot" id="rotaPreviewDot"></div>
+        <span id="rotaPreviewText"></span>
+      </div>
+
+      <div class="add-grid">
+
+        <!-- Empresa -->
+        <div class="add-section-label">Dados da empresa</div>
+
+        <div class="add-field full">
+          <label class="add-label">Nome da empresa <span>*</span></label>
+          <input class="add-inp" id="f-name" type="text" placeholder="Ex: Dental Parana Ltda" oninput="validateForm()">
+        </div>
+
+        <div class="add-field">
+          <label class="add-label">CNPJ <span>*</span></label>
+          <input class="add-inp" id="f-cnpj" type="text" placeholder="00.000.000/0000-00" oninput="maskCnpj(this);validateForm()">
+        </div>
+
+        <div class="add-field">
+          <label class="add-label">Porte <span>*</span></label>
+          <div class="porte-pills">
+            <button type="button" class="porte-pill" id="pp-grande"  onclick="selectPorte('grande')">Grande</button>
+            <button type="button" class="porte-pill" id="pp-medio"   onclick="selectPorte('medio')">Medio</button>
+            <button type="button" class="porte-pill" id="pp-pequeno" onclick="selectPorte('pequeno')">Pequeno</button>
+          </div>
+        </div>
+
+        <div class="add-div"></div>
+
+        <!-- Localização -->
+        <div class="add-section-label">Localizacao</div>
+
+        <div class="add-field">
+          <label class="add-label">Cidade <span>*</span></label>
+          <select class="add-sel" id="f-city" onchange="onCityChange(this.value);validateForm()">
+            <option value="">Selecione a cidade...</option>
+            <optgroup label="Norte PR — Rota 1">
+              <option value="Londrina|rota1">Londrina</option>
+              <option value="Rolandia|rota1">Rolandia</option>
+              <option value="Cambe|rota1">Cambe</option>
+              <option value="Arapongas|rota1">Arapongas</option>
+              <option value="Apucarana|rota1">Apucarana</option>
+              <option value="Maringa|rota1">Maringa</option>
+              <option value="Cianorte|rota1">Cianorte</option>
+              <option value="Paranavaí|rota1">Paranavaí</option>
+            </optgroup>
+            <optgroup label="Leste PR — Rota 2">
+              <option value="Curitiba|rota2">Curitiba</option>
+              <option value="Ponta Grossa|rota2">Ponta Grossa</option>
+              <option value="Pinhais / SJP|rota2">Pinhais / SJP</option>
+              <option value="Paranagua|rota2">Paranagua</option>
+              <option value="Campo Largo|rota2">Campo Largo</option>
+            </optgroup>
+            <optgroup label="Oeste PR — Rota 3">
+              <option value="Cascavel|rota3">Cascavel</option>
+              <option value="Foz do Iguacu|rota3">Foz do Iguacu</option>
+              <option value="Toledo|rota3">Toledo</option>
+              <option value="Francisco Beltrao|rota3">Francisco Beltrao</option>
+              <option value="Pato Branco|rota3">Pato Branco</option>
+              <option value="Guarapuava|rota3">Guarapuava</option>
+            </optgroup>
+            <optgroup label="Centro-Norte PR — Rota 4">
+              <option value="Sto. Ant. Platina|rota4">Sto. Ant. Platina</option>
+              <option value="Siqueira Campos|rota4">Siqueira Campos</option>
+              <option value="Ibaiti|rota4">Ibaiti</option>
+            </optgroup>
+            <optgroup label="Outra cidade">
+              <option value="__outro__|">Outra cidade (informar abaixo)</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <!-- Cidade manual (hidden) -->
+        <div class="add-field" id="city-manual-wrap" style="display:none;">
+          <label class="add-label">Nome da cidade</label>
+          <input class="add-inp" id="f-city-manual" type="text" placeholder="Nome da cidade">
+        </div>
+
+        <!-- Rota manual (hidden) -->
+        <div class="add-field" id="rota-manual-wrap" style="display:none;">
+          <label class="add-label">Rota <span>*</span></label>
+          <select class="add-sel" id="f-rota-manual" onchange="onRotaManual(this.value)">
+            <option value="">Selecione a rota...</option>
+            <option value="rota1">Rota 1 — Norte PR</option>
+            <option value="rota2">Rota 2 — Leste PR</option>
+            <option value="rota3">Rota 3 — Oeste PR</option>
+            <option value="rota4">Rota 4 — Centro-Norte PR</option>
+          </select>
+        </div>
+
+        <div class="add-field full">
+          <label class="add-label">Endereco</label>
+          <input class="add-inp" id="f-addr" type="text" placeholder="Rua, numero, bairro, CEP">
+        </div>
+
+        <div class="add-div"></div>
+
+        <!-- Contato -->
+        <div class="add-section-label">Contato</div>
+
+        <div class="add-field">
+          <label class="add-label">Telefone</label>
+          <input class="add-inp" id="f-tel" type="text" placeholder="(00) 0000-0000">
+        </div>
+
+        <div class="add-field">
+          <label class="add-label">WhatsApp</label>
+          <input class="add-inp" id="f-wapp" type="text" placeholder="(00) 00000-0000">
+        </div>
+
+        <div class="add-field">
+          <label class="add-label">Site</label>
+          <input class="add-inp" id="f-site" type="text" placeholder="seusite.com.br">
+        </div>
+
+        <div class="add-field">
+          <label class="add-label">Instagram</label>
+          <input class="add-inp" id="f-ig" type="text" placeholder="@perfil">
+        </div>
+
+        <div class="add-div"></div>
+
+        <div class="add-field full">
+          <label class="add-label">Observacoes</label>
+          <textarea class="add-textarea" id="f-obs" placeholder="Informacoes adicionais, estrutura, historico..."></textarea>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="add-foot">
+      <button class="btn-cancel" onclick="closeAdd()">Cancelar</button>
+      <button class="btn-save" id="btn-save" onclick="saveDistribuidor()" disabled>Salvar distribuidor</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+</body>
+</html>
